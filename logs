@@ -1,0 +1,267 @@
+Update: 0
+Update: 0
+Update: 1
+updateNumOfPlayers start
+  ok
+  current state: 1
+  numberOfPlayers: 0
+updateNumOfPlayers end
+Update: 1
+updateNumOfPlayers start
+  ok
+  current state: 1
+  numberOfPlayers: 0
+updateNumOfPlayers end
+Update: 1
+updateNumOfPlayers start
+  ok
+  huh.StateCompleted
+  current state: 2
+  numberOfPlayers: 1
+updateNumOfPlayers end
+Update: 2
+characterSetupForm == nil
+initCharacterSelectForm start
+initCharacterSelectForm end
+m.characterSetupForm.Init()
+returning
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
+Update: 2
+charDoneMsg
+m.characterSetupForm != nil
+updateCharacterSetupForm start
+  ok
+updateCharacterSetupForm end
