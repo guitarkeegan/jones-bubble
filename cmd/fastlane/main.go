@@ -7,7 +7,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/help"
 	tea "github.com/charmbracelet/bubbletea"
-	art "github.com/guitarkeegan/jones_bubble/ascii-art"
+	art "github.com/guitarkeegan/jones_bubble/internal/ascii-art"
 
 	"github.com/charmbracelet/huh"
 )
@@ -104,7 +104,6 @@ func InitModel() tea.Model {
 }
 
 func (m model) updateStart(msg tea.Msg) (tea.Model, tea.Cmd) {
-
 	// start game
 	switch msg := msg.(type) {
 
@@ -123,7 +122,6 @@ func (m model) updateStart(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) updateNumOfPlayers(msg tea.Msg) (tea.Model, tea.Cmd) {
-
 	dbg("updateNumOfPlayers start")
 	// Process the form
 	form, cmd := m.playerSetupForm.Update(msg)
@@ -145,11 +143,9 @@ func (m model) updateNumOfPlayers(msg tea.Msg) (tea.Model, tea.Cmd) {
 	dbg("  numberOfPlayers: %d", m.numPlayers)
 	dbg("updateNumOfPlayers end")
 	return m, cmd
-
 }
 
 func (m model) updateCharacterSetupForm(msg tea.Msg) (tea.Model, tea.Cmd) {
-
 	dbg("updateCharacterSetupForm start")
 	// Process the form
 	form, cmd := m.characterSetupForm.Update(msg)
@@ -189,11 +185,9 @@ func initCharacterSelectForm(playerCount int) *huh.Form {
 
 	dbg("initCharacterSelectForm end")
 	return huh.NewForm(characterSelections...)
-
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-
 	dbg("Update: %v", m.currentState)
 
 	switch m.currentState {
@@ -223,7 +217,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-
 	if m.quitting {
 		return string(m.viewArt[end])
 	}
@@ -245,11 +238,9 @@ func (m model) View() string {
 
 	startMsg := "Press q to quit OR any other key to start\n"
 	return string(m.viewArt[start]) + "\n\n" + startMsg
-
 }
 
 func main() {
-
 	_, err := tea.NewProgram(InitModel()).Run()
 	if err != nil {
 		log.Fatalf("whoopsies: %s", err)
