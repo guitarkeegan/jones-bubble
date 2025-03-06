@@ -109,12 +109,12 @@ func (m model) View() string {
 		return m.charactersSetupForm.View()
 
 	case startingGame:
-		return fmt.Sprintln("Lets Play! 🚀")
+		return fmt.Sprintln("Lets Play! 🚀\n")
 
 	case shuttingDown:
 		return fmt.Sprintf("%s\n%s\n", m.viewArt.Title, m.messages.Goodbye)
 
 	default:
-		return fmt.Sprintf("unhandled view state: %s", m.currentState)
+		return fmt.Sprintf("unhandled view state: %s\n", m.currentState)
 	}
 }
