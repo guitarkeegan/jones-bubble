@@ -2,36 +2,38 @@ package main
 
 import tea "github.com/charmbracelet/bubbletea"
 
-type StateToken string
+type State string
 
-var (
-	initializing       StateToken = "initializing"
-	confirmingStart    StateToken = "confirming start"
-	settingPlayerCount StateToken = "setting player count"
-	settingCharacters  StateToken = "setting characters"
-	startingGame       StateToken = "starting game"
-	shuttingDown       StateToken = "shutting down"
-)
-
-func (t StateToken) String() string {
+func (t State) String() string {
 	return string(t)
 }
 
-type StateTransition string
+type StateMsg string
 
-func (t StateTransition) String() string {
+func (t StateMsg) String() string {
 	return string(t)
 }
 
-func (t StateTransition) Cmd() tea.Msg {
+func (t StateMsg) Cmd() tea.Msg {
 	return t
 }
 
 const (
-	initialized    StateTransition = "initialized"
-	startRequested StateTransition = "start requested"
-	playerCountSet StateTransition = "player count set"
-	charactersSet  StateTransition = "characters set"
-	gameStarted    StateTransition = "game started"
-	exitRequested  StateTransition = "exit requested"
+	initializing State    = "initializing"
+	initialized  StateMsg = "initialized"
+
+	confirmingStart State    = "confirming start"
+	exitRequested   StateMsg = "exit requested"
+	startRequested  StateMsg = "start requested"
+
+	settingPlayerCount State    = "setting player count"
+	playerCountSet     StateMsg = "player count set"
+
+	settingCharacters State    = "setting characters"
+	charactersSet     StateMsg = "characters set"
+
+	startingGame State    = "starting game"
+	gameStarted  StateMsg = "game started"
+
+	shuttingDown State = "shutting down"
 )

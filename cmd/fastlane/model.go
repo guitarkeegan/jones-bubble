@@ -31,7 +31,7 @@ type model struct {
 	charactersSetupForm *huh.Form
 	characters          map[player]character
 	helpMenu            help.Model
-	currentState        StateToken
+	state               State
 }
 
 func newModel() tea.Model {
@@ -42,9 +42,9 @@ func newModel() tea.Model {
 		messages: userMessages{
 			"Hello", "Goodbye", "Press q to quit OR any other key to start",
 		},
-		helpMenu:     help.New(),
-		characters:   map[player]string{},
-		currentState: initializing,
+		helpMenu:   help.New(),
+		characters: map[player]string{},
+		state:      initializing,
 	}
 }
 
@@ -53,23 +53,23 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m model) Update(tMsg tea.Msg) (tea.Model, tea.Cmd) {
-	dbg(fmt.Sprintf("update state: %[1]s | msg/type: %[2]v/%[2]T", m.currentState, tMsg))
+	dbg(fmt.Sprintf("update state: %[1]s | msg/type: %[2]v/%[2]T", m.state, tMsg))
 
 	switch msg := tMsg.(type) {
-	case StateTransition:
+	case StateMsg:
 		switch msg {
 		case initialized:
-			m.currentState = confirmingStart
+			m.state = confirmingStart
 		case startRequested:
-			m.currentState = settingPlayerCount
+			m.state = settingPlayerCount
 		case playerCountSet:
-			m.currentState = settingCharacters
+			m.state = settingCharacters
 			m.playerSetupForm = nil
 		case charactersSet:
-			m.currentState = startingGame
+			m.state = startingGame
 			m.charactersSetupForm = nil
 		case exitRequested:
-			m.currentState = shuttingDown
+			m.state = shuttingDown
 		}
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -78,24 +78,28 @@ func (m model) Update(tMsg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	switch m.currentState {
+	switch m.state {
+	case initializing:
+		return m, nil
 	case confirmingStart:
 		return m.updateConfirm(tMsg)
 	case settingPlayerCount:
 		return m.updateSetPlayerCount(tMsg)
 	case settingCharacters:
 		return m.updateCharacterSetupForm(tMsg)
+	case startingGame:
+		return m, nil
 	case shuttingDown:
 		return m, tea.Quit
+	default:
+		return m, nil
 	}
-
-	return m, nil
 }
 
 func (m model) View() string {
-	dbg("view state: %s", m.currentState)
+	dbg("view state: %s", m.state)
 
-	switch m.currentState {
+	switch m.state {
 	case initializing:
 		return fmt.Sprintf("%s\n%s\n", m.viewArt.Title, m.messages.Hello)
 
@@ -109,12 +113,12 @@ func (m model) View() string {
 		return m.charactersSetupForm.View()
 
 	case startingGame:
-		return fmt.Sprintln("Lets Play! 🚀\n")
+		return fmt.Sprintln("Lets Play! 🚀")
 
 	case shuttingDown:
 		return fmt.Sprintf("%s\n%s\n", m.viewArt.Title, m.messages.Goodbye)
 
 	default:
-		return fmt.Sprintf("unhandled view state: %s\n", m.currentState)
+		return fmt.Sprintf("unhandled view state: %s\n", m.state)
 	}
 }
