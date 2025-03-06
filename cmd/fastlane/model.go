@@ -32,6 +32,21 @@ const (
 	end
 )
 
+func (v view) String() string {
+	lookup := []string{
+		"start",
+		"numOfPlayers",
+		"chooseCharacter",
+		"game",
+		"end",
+	}
+	s := "unknown"
+	if int(v) < len(lookup) {
+		s = lookup[v]
+	}
+	return s
+}
+
 type character = string
 
 const (
@@ -66,11 +81,12 @@ type model struct {
 }
 
 func newModel() tea.Model {
-	return model{
+	return &model{
 		viewArt:         []art.Element{art.MainTitle, "", "", "", "endGame"},
 		helpMenu:        help.New(),
 		currentState:    start,
 		playerSetupForm: initplayerSetupForm(),
+		playerCharacter: map[player]string{},
 	}
 }
 
@@ -79,8 +95,7 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	dbg("Update: %v", m.currentState)
-
+	dbg(fmt.Sprintf("state: %[1]s | msg/type: %[2]v/%[2]T", m.currentState, msg))
 	switch m.currentState {
 	case start:
 		return m.updateStart(msg)
@@ -88,12 +103,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m.updateNumOfPlayers(msg)
 	case chooseCharacter:
 		if m.characterSetupForm == nil {
-			dbg("characterSetupForm == nil")
-			// TODO: intialize character selecter
 			m.characterSetupForm = initCharacterSelectForm(m.numPlayers)
-			dbg("m.characterSetupForm.Init()")
 			cmd := m.characterSetupForm.Init()
-			dbg("returning")
 			return m, cmd
 		}
 		dbg("charDoneMsg")

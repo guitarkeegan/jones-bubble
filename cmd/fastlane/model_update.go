@@ -8,9 +8,7 @@ import (
 )
 
 func (m model) updateStart(msg tea.Msg) (tea.Model, tea.Cmd) {
-	// start game
 	switch msg := msg.(type) {
-
 	case tea.WindowSizeMsg:
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -18,6 +16,7 @@ func (m model) updateStart(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			return m, tea.Quit
 		default:
+			dbg("setting current state to numOfPlayers")
 			m.currentState = numOfPlayers
 		}
 	}
@@ -26,26 +25,21 @@ func (m model) updateStart(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) updateNumOfPlayers(msg tea.Msg) (tea.Model, tea.Cmd) {
-	dbg("updateNumOfPlayers start")
-	// Process the form
 	form, cmd := m.playerSetupForm.Update(msg)
 	if f, ok := form.(*huh.Form); ok {
-		dbg("  ok")
 		m.playerSetupForm = f
 	} else {
-		dbg("  !ok")
+		dbg("numOfPlayers form is NOT OK (should never happen)")
 	}
 
 	if m.playerSetupForm.State == huh.StateCompleted {
 		// set player count and update view
-		dbg("  huh.StateCompleted")
 		m.numPlayers = m.playerSetupForm.GetInt(playerCount)
+		dbg(fmt.Sprintf("player count from form: %d", m.numPlayers))
 		m.currentState = chooseCharacter
 	}
 
-	dbg("  current state: %v", m.currentState)
-	dbg("  numberOfPlayers: %d", m.numPlayers)
-	dbg("updateNumOfPlayers end")
+	dbg(fmt.Sprintf("cmd/type: %[1]v/%[1]T", cmd))
 	return m, cmd
 }
 
