@@ -6,7 +6,7 @@ import (
 	"github.com/charmbracelet/huh"
 )
 
-func initplayerSetupForm() *huh.Form {
+func newPlayerSetupForm() *huh.Form {
 	return huh.NewForm(
 		huh.NewGroup(
 			huh.NewSelect[int]().
@@ -18,8 +18,7 @@ func initplayerSetupForm() *huh.Form {
 	)
 }
 
-func initCharacterSelectForm(playerCount int) *huh.Form {
-	dbg("initCharacterSelectForm start")
+func newCharactersSelectForm(playerCount int) *huh.Form {
 	characterSelections := []*huh.Group{}
 	for i := 1; i <= playerCount; i++ {
 		characterSelections = append(characterSelections, huh.NewGroup(
@@ -31,6 +30,5 @@ func initCharacterSelectForm(playerCount int) *huh.Form {
 		))
 	}
 
-	dbg("initCharacterSelectForm end")
 	return huh.NewForm(characterSelections...)
 }

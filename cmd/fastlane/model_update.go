@@ -25,7 +25,7 @@ func (m model) updateConfirm(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) updateSetPlayerCount(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if m.playerSetupForm == nil {
-		m.playerSetupForm = initplayerSetupForm()
+		m.playerSetupForm = newPlayerSetupForm()
 		return m, m.playerSetupForm.Init()
 	}
 
@@ -46,7 +46,7 @@ func (m model) updateSetPlayerCount(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) updateCharacterSetupForm(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if m.charactersSetupForm == nil {
-		m.charactersSetupForm = initCharacterSelectForm(m.playerCount)
+		m.charactersSetupForm = newCharactersSelectForm(m.playerCount)
 		return m, m.charactersSetupForm.Init()
 	}
 
