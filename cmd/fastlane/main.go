@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	_, err := tea.NewProgram(InitModel()).Run()
+	_, err := tea.NewProgram(newModel()).Run()
 	if err != nil {
 		log.Fatalf("whoopsies: %s", err)
 	}

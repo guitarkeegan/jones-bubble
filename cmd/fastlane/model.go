@@ -65,17 +65,17 @@ type model struct {
 	quitting           bool
 }
 
-func (m model) Init() tea.Cmd {
-	return m.playerSetupForm.Init()
-}
-
-func InitModel() tea.Model {
+func newModel() tea.Model {
 	return model{
 		viewArt:         []art.Element{art.MainTitle, "", "", "", "endGame"},
 		helpMenu:        help.New(),
 		currentState:    start,
 		playerSetupForm: initplayerSetupForm(),
 	}
+}
+
+func (m model) Init() tea.Cmd {
+	return m.playerSetupForm.Init()
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
