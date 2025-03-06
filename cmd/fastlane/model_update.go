@@ -7,24 +7,28 @@ import (
 	"github.com/charmbracelet/huh"
 )
 
-func (m model) updateStart(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m model) updateConfirm(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case tea.WindowSizeMsg:
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "q", "ctrl+c":
-			m.quitting = true
-			return m, tea.Quit
-		default:
-			dbg("setting current state to numOfPlayers")
-			m.currentState = numOfPlayers
-		}
-	}
+			return m, exitRequested.Cmd
 
-	return m, nil
+		default:
+			return m, startRequested.Cmd
+		}
+
+	default:
+		return m, nil
+	}
 }
 
-func (m model) updateNumOfPlayers(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m model) updateSetPlayerCount(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if m.playerSetupForm == nil {
+		m.playerSetupForm = initplayerSetupForm()
+		return m, m.playerSetupForm.Init()
+	}
+
 	form, cmd := m.playerSetupForm.Update(msg)
 	if f, ok := form.(*huh.Form); ok {
 		m.playerSetupForm = f
@@ -33,37 +37,33 @@ func (m model) updateNumOfPlayers(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	if m.playerSetupForm.State == huh.StateCompleted {
-		// set player count and update view
-		m.numPlayers = m.playerSetupForm.GetInt(playerCount)
-		dbg(fmt.Sprintf("player count from form: %d", m.numPlayers))
-		m.currentState = chooseCharacter
+		m.playerCount = m.playerSetupForm.GetInt(playerCountKey)
+		return m, playerCountSet.Cmd
 	}
 
-	dbg(fmt.Sprintf("cmd/type: %[1]v/%[1]T", cmd))
 	return m, cmd
 }
 
 func (m model) updateCharacterSetupForm(msg tea.Msg) (tea.Model, tea.Cmd) {
-	dbg("updateCharacterSetupForm start")
+	if m.charactersSetupForm == nil {
+		m.charactersSetupForm = initCharacterSelectForm(m.playerCount)
+		return m, m.charactersSetupForm.Init()
+	}
+
 	// Process the form
-	form, cmd := m.characterSetupForm.Update(msg)
+	form, cmd := m.charactersSetupForm.Update(msg)
 	if f, ok := form.(*huh.Form); ok {
-		dbg("  ok")
-		m.characterSetupForm = f
+		m.charactersSetupForm = f
 	} else {
-		dbg("  !ok")
+		dbg("characters form is NOT OK (should never happen)")
 	}
 
-	if m.characterSetupForm.State == huh.StateCompleted {
-		dbg("  stateCompleted start")
-		// map players to characters
-		for i := 1; i < m.numPlayers+1; i++ {
-			m.playerCharacter[player(i)] = character(m.characterSetupForm.GetString(fmt.Sprintf("player%d", i)))
+	if m.charactersSetupForm.State == huh.StateCompleted {
+		for i := 1; i < m.playerCount+1; i++ {
+			m.characters[player(i)] = character(m.charactersSetupForm.GetString(fmt.Sprintf("player%d", i)))
 		}
-		dbg("  stateCompleted end")
-		m.currentState = game
+		return m, charactersSet.Cmd
 	}
 
-	dbg("updateCharacterSetupForm end")
 	return m, cmd
 }

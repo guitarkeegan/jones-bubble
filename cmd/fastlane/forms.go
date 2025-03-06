@@ -10,7 +10,7 @@ func initplayerSetupForm() *huh.Form {
 	return huh.NewForm(
 		huh.NewGroup(
 			huh.NewSelect[int]().
-				Key(playerCount).
+				Key(playerCountKey).
 				Options(huh.NewOptions(1, 2, 3, 4)...).
 				Title("Players").
 				Description("Choose how many players there will be."),

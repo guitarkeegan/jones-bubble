@@ -10,134 +10,111 @@ import (
 )
 
 // TODOS
-// Start Screen, press q to quit, or any other to start
-// How many players?
-// Choose Players
 // Example Weekend Edition
 // Show a top info menu, the main map/viewer, and help commands
 
-type charDoneMsg string
-
-func charDone() tea.Msg {
-	return charDoneMsg("done")
+type artwork struct {
+	Title string
 }
 
-type view int
-
-const (
-	start view = iota
-	numOfPlayers
-	chooseCharacter
-	game
-	end
-)
-
-func (v view) String() string {
-	lookup := []string{
-		"start",
-		"numOfPlayers",
-		"chooseCharacter",
-		"game",
-		"end",
-	}
-	s := "unknown"
-	if int(v) < len(lookup) {
-		s = lookup[v]
-	}
-	return s
+type userMessages struct {
+	Hello   string
+	Goodbye string
+	Confirm string
 }
-
-type character = string
-
-const (
-	george character = "George"
-	john   character = "John"
-	paul   character = "Paul"
-	ringo  character = "Ringo"
-)
-
-type player int
-
-const (
-	player1 player = iota + 1
-	player2
-	player3
-	player4
-)
-
-const (
-	playerCount = "playerCount"
-)
 
 type model struct {
-	viewArt            []art.Element
-	currentState       view
-	numPlayers         int
-	playerSetupForm    *huh.Form
-	characterSetupForm *huh.Form
-	playerCharacter    map[player]character
-	helpMenu           help.Model
-	quitting           bool
+	viewArt             artwork
+	messages            userMessages
+	playerSetupForm     *huh.Form
+	playerCount         int
+	charactersSetupForm *huh.Form
+	characters          map[player]character
+	helpMenu            help.Model
+	currentState        StateToken
 }
 
 func newModel() tea.Model {
 	return &model{
-		viewArt:         []art.Element{art.MainTitle, "", "", "", "endGame"},
-		helpMenu:        help.New(),
-		currentState:    start,
-		playerSetupForm: initplayerSetupForm(),
-		playerCharacter: map[player]string{},
+		viewArt: artwork{
+			art.MainTitle,
+		},
+		messages: userMessages{
+			"Hello", "Goodbye", "Press q to quit OR any other key to start",
+		},
+		helpMenu:     help.New(),
+		characters:   map[player]string{},
+		currentState: initializing,
 	}
 }
 
 func (m model) Init() tea.Cmd {
-	return m.playerSetupForm.Init()
+	return initialized.Cmd
 }
 
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	dbg(fmt.Sprintf("state: %[1]s | msg/type: %[2]v/%[2]T", m.currentState, msg))
-	switch m.currentState {
-	case start:
-		return m.updateStart(msg)
-	case numOfPlayers:
-		return m.updateNumOfPlayers(msg)
-	case chooseCharacter:
-		if m.characterSetupForm == nil {
-			m.characterSetupForm = initCharacterSelectForm(m.numPlayers)
-			cmd := m.characterSetupForm.Init()
-			return m, cmd
+func (m model) Update(tMsg tea.Msg) (tea.Model, tea.Cmd) {
+	dbg(fmt.Sprintf("update state: %[1]s | msg/type: %[2]v/%[2]T", m.currentState, tMsg))
+
+	switch msg := tMsg.(type) {
+	case StateTransition:
+		switch msg {
+		case initialized:
+			m.currentState = confirmingStart
+		case startRequested:
+			m.currentState = settingPlayerCount
+		case playerCountSet:
+			m.currentState = settingCharacters
+			m.playerSetupForm = nil
+		case charactersSet:
+			m.currentState = startingGame
+			m.charactersSetupForm = nil
+		case exitRequested:
+			m.currentState = shuttingDown
 		}
-		dbg("charDoneMsg")
-		// switch msg := msg.(type) {
-		// case charDoneMsg:
-		dbg("m.characterSetupForm != nil")
-		return m.updateCharacterSetupForm(msg)
-		//}
+	case tea.KeyMsg:
+		switch msg.String() {
+		case "q", "ctrl+c":
+			return m, exitRequested.Cmd
+		}
+	}
+
+	switch m.currentState {
+	case confirmingStart:
+		return m.updateConfirm(tMsg)
+	case settingPlayerCount:
+		return m.updateSetPlayerCount(tMsg)
+	case settingCharacters:
+		return m.updateCharacterSetupForm(tMsg)
+	case shuttingDown:
+		return m, tea.Quit
 	}
 
 	return m, nil
 }
 
 func (m model) View() string {
-	if m.quitting {
-		return string(m.viewArt[end])
-	}
+	dbg("view state: %s", m.currentState)
 
 	switch m.currentState {
-	case start:
-		startMsg := "Press q to quit OR any other key to start\n"
-		return string(m.viewArt[start]) + "\n\n" + startMsg
-	case numOfPlayers:
-		return m.playerSetupForm.View()
-	case chooseCharacter:
-		if m.characterSetupForm == nil {
-			return fmt.Sprintln("loading...")
-		}
-		return m.characterSetupForm.View()
-	case game:
-		return fmt.Sprintln("Lets Play! 🚀")
-	}
+	case initializing:
+		return fmt.Sprintf("%s\n%s\n", m.viewArt.Title, m.messages.Hello)
 
-	startMsg := "Press q to quit OR any other key to start\n"
-	return string(m.viewArt[start]) + "\n\n" + startMsg
+	case confirmingStart:
+		return fmt.Sprintf("%s\n%s\n", m.viewArt.Title, m.messages.Confirm)
+
+	case settingPlayerCount:
+		return m.playerSetupForm.View()
+
+	case settingCharacters:
+		return m.charactersSetupForm.View()
+
+	case startingGame:
+		return fmt.Sprintln("Lets Play! 🚀")
+
+	case shuttingDown:
+		return fmt.Sprintf("%s\n%s\n", m.viewArt.Title, m.messages.Goodbye)
+
+	default:
+		return fmt.Sprintf("unhandled view state: %s", m.currentState)
+	}
 }
