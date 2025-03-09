@@ -32,3 +32,32 @@ func newCharactersSelectForm(playerCount int) *huh.Form {
 
 	return huh.NewForm(characterSelections...)
 }
+
+func newCharacterSelectGoalsForm(playerNum int) *huh.Form {
+
+	return huh.NewForm(
+		huh.NewGroup(
+			huh.NewSelect[int]().
+				Key(educationGoalKey).
+				Options(huh.NewOptions(50, 100, 150, 200, 250)...).
+				Title(fmt.Sprintf("Player %d: Education Goal", playerNum)).
+				Description("What is your educational goal?"),
+			huh.NewSelect[int]().
+				Key(happinessGoalKey).
+				Options(huh.NewOptions(50, 100, 150, 200, 250)...).
+				Title(fmt.Sprintf("Player %d: Happiness Goal", playerNum)).
+				Description("What it is your happiness goal?"),
+			huh.NewSelect[int]().
+				Key(moneyGoalKey).
+				Options(huh.NewOptions(50, 100, 150, 200, 250)...).
+				Title(fmt.Sprintf("Player %d: Money Goal", playerNum)).
+				Description("What it is your money goal?"),
+			huh.NewSelect[int]().
+				Key(careerGoalKey).
+				Options(huh.NewOptions(50, 100, 150, 200, 250)...).
+				Title(fmt.Sprintf("Player %d: Career Goal", playerNum)).
+				Description("What it is your career goal?"),
+		),
+	)
+
+}

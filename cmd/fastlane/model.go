@@ -28,6 +28,8 @@ type model struct {
 	messages            userMessages
 	playerSetupForm     *huh.Form
 	playerCount         int
+	playerGoalsCount    int
+	characterGoalsForm  *huh.Form
 	charactersSetupForm *huh.Form
 	characters          map[player]character
 	helpMenu            help.Model
@@ -43,7 +45,7 @@ func newModel() tea.Model {
 			"Hello", "Goodbye", "Press q to quit OR any other key to start",
 		},
 		helpMenu:   help.New(),
-		characters: map[player]string{},
+		characters: make(map[player]character),
 		state:      initializing,
 	}
 }
@@ -66,8 +68,12 @@ func (m model) Update(tMsg tea.Msg) (tea.Model, tea.Cmd) {
 			m.state = settingCharacters
 			m.playerSetupForm = nil
 		case charactersSet:
-			m.state = startingGame
+			m.state = settingGoals
 			m.charactersSetupForm = nil
+			m.characterGoalsForm = nil
+		case goalsSet:
+			m.state = startingGame
+			m.characterGoalsForm = nil
 		case exitRequested:
 			m.state = shuttingDown
 		}
@@ -87,8 +93,10 @@ func (m model) Update(tMsg tea.Msg) (tea.Model, tea.Cmd) {
 		return m.updateSetPlayerCount(tMsg)
 	case settingCharacters:
 		return m.updateCharacterSetupForm(tMsg)
+	case settingGoals:
+		return m.updateCharacterGoalsForm(tMsg)
 	case startingGame:
-		return m, nil
+		return m.updateGame(tMsg)
 	case shuttingDown:
 		return m, tea.Quit
 	default:
@@ -112,8 +120,15 @@ func (m model) View() string {
 	case settingCharacters:
 		return m.charactersSetupForm.View()
 
+	case settingGoals:
+		return m.characterGoalsForm.View()
+
 	case startingGame:
-		return fmt.Sprintln("Lets Play! 🚀")
+		var s string
+		for k, v := range m.characters {
+			s += fmt.Sprintf("%v:\n\n%+v\n\n", k, v)
+		}
+		return s
 
 	case shuttingDown:
 		return fmt.Sprintf("%s\n%s\n", m.viewArt.Title, m.messages.Goodbye)

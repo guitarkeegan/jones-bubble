@@ -32,6 +32,9 @@ const (
 	settingCharacters State    = "setting characters"
 	charactersSet     StateMsg = "characters set"
 
+	settingGoals State    = "setting goals"
+	goalsSet     StateMsg = "goals set"
+
 	startingGame State    = "starting game"
 	gameStarted  StateMsg = "game started"
 

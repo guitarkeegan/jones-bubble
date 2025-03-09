@@ -1,16 +1,32 @@
 package main
 
-type character = string
+type name = string
+
+type character struct {
+	name             name
+	currentHappiness int
+	happinessGoal    int
+	currentMoney     int
+	moneyGoal        int
+	currentEducation int
+	educationGoal    int
+	currentCareer    int
+	careerGoal       int
+}
 
 const (
-	george character = "George"
-	john   character = "John"
-	paul   character = "Paul"
-	ringo  character = "Ringo"
+	george name = "George"
+	john   name = "John"
+	paul   name = "Paul"
+	ringo  name = "Ringo"
 )
 
 type player int
 
 const (
-	playerCountKey = "playerCount"
+	playerCountKey   = "playerCount"
+	educationGoalKey = "educationGoalKey"
+	moneyGoalKey     = "moneyGoalKey"
+	happinessGoalKey = "happinessGoalKey"
+	careerGoalKey    = "careerGoalKey"
 )
