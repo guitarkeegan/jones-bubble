@@ -128,13 +128,8 @@ func (m model) updateGame(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "q", "ctrl+c":
 			return m, exitRequested.Cmd
-
-		default:
-			return m, startRequested.Cmd
 		}
-
-	default:
-		return m, nil
 	}
 
+	return m, nil
 }

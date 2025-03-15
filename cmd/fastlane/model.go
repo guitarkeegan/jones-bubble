@@ -9,10 +9,6 @@ import (
 	art "github.com/guitarkeegan/jones_bubble/internal/ascii-art"
 )
 
-// TODOS
-// Example Weekend Edition
-// Show a top info menu, the main map/viewer, and help commands
-
 type artwork struct {
 	Title string
 }
@@ -34,6 +30,7 @@ type model struct {
 	characters          map[player]character
 	helpMenu            help.Model
 	state               State
+	currentTurn         player
 }
 
 func newModel() tea.Model {
