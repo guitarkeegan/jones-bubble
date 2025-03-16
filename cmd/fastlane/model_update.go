@@ -60,8 +60,6 @@ func (m model) updateCharacterSetupForm(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	if m.charactersSetupForm.State == huh.StateCompleted {
 		for i := 1; i < m.playerCount+1; i++ {
-			// TODO: need to update this to work with the new
-			// character
 			m.characters[player(i)] = character{name: name(m.charactersSetupForm.GetString(fmt.Sprintf("player%d", i)))}
 		}
 		return m, charactersSet.Cmd
@@ -76,6 +74,11 @@ func (m model) updateCharacterGoalsForm(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	if m.characterGoalsForm == nil {
 		dbg("  cgf is nil")
+		if m.playerCount == m.playerGoalsCount {
+			dbg("  goals are set")
+			return m, goalsSet.Cmd
+		}
+		// not incrementing playerGoalsCount
 		m.characterGoalsForm = newCharacterSelectGoalsForm(m.playerGoalsCount + 1)
 		return m, m.characterGoalsForm.Init()
 	}
@@ -93,32 +96,38 @@ func (m model) updateCharacterGoalsForm(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	if m.characterGoalsForm.State == huh.StateCompleted {
 		dbg("  completed state")
-		// TODO refactor this
-		m.playerGoalsCount++
+		dbg("  playerCount: %d, playerGoalsCount: %d", m.playerCount, m.playerGoalsCount)
 		if m.playerGoalsCount < m.playerCount {
+			m.playerGoalsCount++
+			dbg("<<<<<<<<<<<<<<<<<")
+			dbg("  m.playerGoalsCount < m.playerCount")
 			career := m.characterGoalsForm.GetInt(careerGoalKey)
 			money := m.characterGoalsForm.GetInt(moneyGoalKey)
 			edu := m.characterGoalsForm.GetInt(educationGoalKey)
 			happiness := m.characterGoalsForm.GetInt(happinessGoalKey)
 			if p, ok := m.characters[player(m.playerGoalsCount)]; ok {
+				dbg("    m.characters[player(m.playerGoalsCount)]")
 				p.careerGoal = career
 				p.moneyGoal = money
 				p.educationGoal = edu
 				p.happinessGoal = happiness
 				m.characters[player(m.playerGoalsCount)] = p
 			}
+
 			return m, charactersSet.Cmd
 		}
 		cmds = append(cmds, goalsSet.Cmd)
 
 	}
 	dbg("  outer return")
+	dbg("  ")
 	dbg("updateCharacterGoalsForm End")
 	return m, tea.Batch(cmds...)
 }
 
 func (m model) updateGame(msg tea.Msg) (tea.Model, tea.Cmd) {
 
+	dbg("updateGame")
 	// TODO:
 	// show map and current character
 	// select location
@@ -131,5 +140,6 @@ func (m model) updateGame(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
+	dbg("End")
 	return m, nil
 }

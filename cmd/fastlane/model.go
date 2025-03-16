@@ -70,7 +70,6 @@ func (m model) Update(tMsg tea.Msg) (tea.Model, tea.Cmd) {
 			m.characterGoalsForm = nil
 		case goalsSet:
 			m.state = startingGame
-			m.characterGoalsForm = nil
 		case exitRequested:
 			m.state = shuttingDown
 		}
@@ -118,6 +117,9 @@ func (m model) View() string {
 		return m.charactersSetupForm.View()
 
 	case settingGoals:
+		if m.characterGoalsForm == nil {
+			return "loading..."
+		}
 		return m.characterGoalsForm.View()
 
 	case startingGame:
