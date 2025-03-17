@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/charmbracelet/lipgloss"
 )
 
 func loadLocationFile(name string) string {
@@ -26,4 +28,11 @@ func createLocation(data locData) location {
 		relativeDistance: data.dist,
 		pos:              data.pos,
 	}
+}
+
+func (gm GameModel) getLocationBlock(l string) lipgloss.Style {
+	if gm.CurrentLoc.name == l {
+		return currentLocationBlock
+	}
+	return locationBlock
 }

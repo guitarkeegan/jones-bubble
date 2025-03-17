@@ -29,4 +29,5 @@ const (
 	moneyGoalKey     = "moneyGoalKey"
 	happinessGoalKey = "happinessGoalKey"
 	careerGoalKey    = "careerGoalKey"
+	destinationKey   = "destinationKey"
 )

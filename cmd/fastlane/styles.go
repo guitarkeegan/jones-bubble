@@ -9,3 +9,7 @@ var locationBlock = lipgloss.NewStyle().
 var titleBlock = lipgloss.NewStyle().
 	Background(lipgloss.Color("#EB96A9")).
 	Foreground(lipgloss.Color("234"))
+
+var currentLocationBlock = lipgloss.NewStyle().
+	Border(lipgloss.NormalBorder()).
+	BorderForeground(lipgloss.Color("#EB96A9"))

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -65,8 +66,10 @@ type GameBoard struct {
 }
 
 type GameModel struct {
-	Board     *GameBoard
-	GameState GameState
+	Board       *GameBoard
+	GameState   GameState
+	ActionsMenu *huh.Form
+	CurrentLoc  *location
 }
 
 func initializeLocations() *GameBoard {
@@ -110,6 +113,12 @@ func NewGameModel() *GameModel {
 	return &GameModel{
 		Board:     initializeLocations(),
 		GameState: initializingMap,
+		CurrentLoc: &location{
+			img:              loadLocationFile("LowCostHousing"),
+			name:             "Low Cost Housing",
+			relativeDistance: 2,
+			pos:              2,
+		},
 	}
 }
 
@@ -119,12 +128,14 @@ func (gm GameModel) Init() tea.Cmd {
 
 func (gm GameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
-	dbg(fmt.Sprintf("update state: %[1]s | msg/type: %[2]v/%[2]T", gm.GameState, msg))
+	dbg(fmt.Sprintf("update game state: %[1]s | msg/type: %[2]v/%[2]T", gm.GameState, msg))
 
 	switch msg := msg.(type) {
 
 	case GameStateMsg:
 		switch msg {
+		case destinationSet:
+			gm.GameState = initializingMap
 		case mapInitialized:
 		case turnStarted:
 
@@ -138,7 +149,12 @@ func (gm GameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch gm.GameState {
 	case initializingMap:
-		return gm, nil
+		// TODO: do this
+		dbg("initializingMap")
+		var cmd tea.Cmd
+		gm, cmd := gm.updateChooseDestination(msg)
+		dbg("cmd: %[1]v, %[1]T", cmd)
+		return gm, cmd
 	default:
 		return gm, nil
 	}
@@ -147,32 +163,40 @@ func (gm GameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (gm GameModel) View() string {
 
-	dbg("gm: View")
+	dbg("game view state: %s", gm.GameState)
 
 	switch gm.GameState {
 
 	case initializingMap:
+
+		if gm.CurrentLoc == nil || gm.ActionsMenu == nil {
+			dbg("%+v", gm.CurrentLoc)
+			return fmt.Sprintln("loading...")
+		}
+
+		selectDestForm := gm.ActionsMenu.View()
 		row1 := lipgloss.JoinHorizontal(
 			lipgloss.Top,
-			locationBlock.Render(gm.Board.luxuryApartments.img+"\n"+titleBlock.Render(gm.Board.luxuryApartments.name)),
-			locationBlock.Render(gm.Board.rentOffice.img+"\n"+titleBlock.Render(gm.Board.rentOffice.name)),
-			locationBlock.Render(gm.Board.lowCostHousing.img+"\n"+titleBlock.Render(gm.Board.lowCostHousing.name)),
-			locationBlock.Render(gm.Board.pawnShop.img+"\n"+titleBlock.Render(gm.Board.pawnShop.name)),
-			locationBlock.Render(gm.Board.zMart.img+"\n"+titleBlock.Render(gm.Board.zMart.name)),
+			gm.getLocationBlock(gm.Board.luxuryApartments.name).Render(gm.Board.luxuryApartments.img+"\n"+titleBlock.Render(gm.Board.luxuryApartments.name)),
+			gm.getLocationBlock(gm.Board.rentOffice.name).Render(gm.Board.rentOffice.img+"\n"+titleBlock.Render(gm.Board.rentOffice.name)),
+			gm.getLocationBlock(gm.Board.lowCostHousing.name).Render(gm.Board.lowCostHousing.img+"\n"+titleBlock.Render(gm.Board.lowCostHousing.name)),
+			gm.getLocationBlock(gm.Board.pawnShop.name).Render(gm.Board.pawnShop.img+"\n"+titleBlock.Render(gm.Board.pawnShop.name)),
+			gm.getLocationBlock(gm.Board.zMart.name).Render(gm.Board.zMart.img+"\n"+titleBlock.Render(gm.Board.zMart.name)),
+			selectDestForm,
 		)
 		row2 := lipgloss.JoinHorizontal(
-			lipgloss.Top,
-			locationBlock.Render(gm.Board.monolithBurgers.img+"\n"+titleBlock.Render(gm.Board.monolithBurgers.name)),
-			locationBlock.Render(gm.Board.qtClothing.img+"\n"+titleBlock.Render(gm.Board.qtClothing.name)),
-			locationBlock.Render(gm.Board.socketCity.img+"\n"+titleBlock.Render(gm.Board.socketCity.name)),
-			locationBlock.Render(gm.Board.hiTechU.img+"\n"+titleBlock.Render(gm.Board.hiTechU.name)),
-			locationBlock.Render(gm.Board.employmentOffice.img+"\n"+titleBlock.Render(gm.Board.employmentOffice.name)),
+			lipgloss.Center,
+			gm.getLocationBlock(gm.Board.monolithBurgers.name).Render(gm.Board.monolithBurgers.img+"\n"+titleBlock.Render(gm.Board.monolithBurgers.name)),
+			gm.getLocationBlock(gm.Board.qtClothing.name).Render(gm.Board.qtClothing.img+"\n"+titleBlock.Render(gm.Board.qtClothing.name)),
+			gm.getLocationBlock(gm.Board.socketCity.name).Render(gm.Board.socketCity.img+"\n"+titleBlock.Render(gm.Board.socketCity.name)),
+			gm.getLocationBlock(gm.Board.hiTechU.name).Render(gm.Board.hiTechU.img+"\n"+titleBlock.Render(gm.Board.hiTechU.name)),
+			gm.getLocationBlock(gm.Board.employmentOffice.name).Render(gm.Board.employmentOffice.img+"\n"+titleBlock.Render(gm.Board.employmentOffice.name)),
 		)
 		row3 := lipgloss.JoinHorizontal(
-			lipgloss.Top,
-			locationBlock.Render(gm.Board.factory.img+"\n"+titleBlock.Render(gm.Board.factory.name)),
-			locationBlock.Render(gm.Board.bank.img+"\n"+titleBlock.Render(gm.Board.bank.name)),
-			locationBlock.Render(gm.Board.blacksMarket.img+"\n"+titleBlock.Render(gm.Board.blacksMarket.name)),
+			lipgloss.Bottom,
+			gm.getLocationBlock(gm.Board.factory.name).Render(gm.Board.factory.img+"\n"+titleBlock.Render(gm.Board.factory.name)),
+			gm.getLocationBlock(gm.Board.bank.name).Render(gm.Board.bank.img+"\n"+titleBlock.Render(gm.Board.bank.name)),
+			gm.getLocationBlock(gm.Board.blacksMarket.name).Render(gm.Board.blacksMarket.img+"\n"+titleBlock.Render(gm.Board.blacksMarket.name)),
 		)
 
 		return row1 + "\n" + row2 + "\n" + row3

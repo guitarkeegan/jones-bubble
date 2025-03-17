@@ -24,4 +24,10 @@ const (
 
 	startingTurn GameState    = "starting turn"
 	turnStarted  GameStateMsg = "turn started"
+
+	initializingForm GameState    = "initializing form"
+	formInitialized  GameStateMsg = "form initialized"
+
+	settingDestination GameState    = "setting destination"
+	destinationSet     GameStateMsg = "destination set"
 )
