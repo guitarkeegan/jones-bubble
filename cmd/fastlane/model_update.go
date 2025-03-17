@@ -124,22 +124,3 @@ func (m model) updateCharacterGoalsForm(msg tea.Msg) (tea.Model, tea.Cmd) {
 	dbg("updateCharacterGoalsForm End")
 	return m, tea.Batch(cmds...)
 }
-
-func (m model) updateGame(msg tea.Msg) (tea.Model, tea.Cmd) {
-
-	dbg("updateGame")
-	// TODO:
-	// show map and current character
-	// select location
-
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		switch msg.String() {
-		case "q", "ctrl+c":
-			return m, exitRequested.Cmd
-		}
-	}
-
-	dbg("End")
-	return m, nil
-}

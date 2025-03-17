@@ -38,8 +38,5 @@ const (
 	startingGame State    = "starting game"
 	gameStarted  StateMsg = "game started"
 
-	startingTurn State    = "starting turn"
-	turnStarted  StateMsg = "turn started"
-
 	shuttingDown State = "shutting down"
 )

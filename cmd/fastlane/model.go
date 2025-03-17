@@ -29,6 +29,7 @@ type model struct {
 	charactersSetupForm *huh.Form
 	characters          map[player]character
 	helpMenu            help.Model
+	GameModel           tea.Model
 	state               State
 	currentTurn         player
 }
@@ -44,6 +45,7 @@ func newModel() tea.Model {
 		helpMenu:   help.New(),
 		characters: make(map[player]character),
 		state:      initializing,
+		GameModel:  NewGameModel(),
 	}
 }
 
@@ -92,7 +94,9 @@ func (m model) Update(tMsg tea.Msg) (tea.Model, tea.Cmd) {
 	case settingGoals:
 		return m.updateCharacterGoalsForm(tMsg)
 	case startingGame:
-		return m.updateGame(tMsg)
+		var gCmd tea.Cmd
+		m.GameModel, gCmd = m.GameModel.Update(tMsg)
+		return m, gCmd
 	case shuttingDown:
 		return m, tea.Quit
 	default:
@@ -123,11 +127,7 @@ func (m model) View() string {
 		return m.characterGoalsForm.View()
 
 	case startingGame:
-		var s string
-		for k, v := range m.characters {
-			s += fmt.Sprintf("%v:\n\n%+v\n\n", k, v)
-		}
-		return s
+		return m.GameModel.View()
 
 	case shuttingDown:
 		return fmt.Sprintf("%s\n%s\n", m.viewArt.Title, m.messages.Goodbye)
