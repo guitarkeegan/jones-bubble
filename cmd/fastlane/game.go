@@ -2,9 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"path/filepath"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -17,27 +14,6 @@ type locData struct {
 	dist  int
 	pos   int
 }
-
-var block1 = lipgloss.NewStyle().
-	Background(lipgloss.Color("57")).
-	Padding(1)
-
-var block2 = lipgloss.NewStyle().
-	Background(lipgloss.Color("213")).
-	Padding(1)
-
-var block3 = lipgloss.NewStyle().
-	Background(lipgloss.Color("42")).
-	Padding(1)
-
-var block4 = lipgloss.NewStyle().
-	Background(lipgloss.Color("208")).
-	Padding(1)
-
-var block5 = lipgloss.NewStyle().
-	Background(lipgloss.Color("171")).
-	Padding(1).
-	Render("Block 5")
 
 type location struct {
 	img              string
@@ -78,7 +54,7 @@ type GameBoard struct {
 	lowCostHousing   location
 	pawnShop         location
 	zMart            location
-	monolith         location
+	monolithBurgers  location
 	qtClothing       location
 	socketCity       location
 	hiTechU          location
@@ -93,18 +69,6 @@ type GameModel struct {
 	GameState GameState
 }
 
-func loadLocationFile(name string) string {
-	filePath := filepath.Join("assets", fmt.Sprintf("Location_%s", name))
-	content, err := os.ReadFile(filePath)
-	if err != nil {
-		// Log the error but don't crash the application
-		log.Printf("WARNING: Failed to load location file %s: %v", filePath, err)
-		// Return a placeholder or default content instead
-		return fmt.Sprintf("[Missing asset for %s]", name)
-	}
-	return string(content)
-}
-
 func initializeLocations() *GameBoard {
 
 	// Map location fields to their data
@@ -114,7 +78,7 @@ func initializeLocations() *GameBoard {
 		"lowCostHousing":   {"LowCostHousing", "Low Cost Housing", 2, 2},
 		"pawnShop":         {"PawnShop", "Pawn Shop", 3, 3},
 		"zMart":            {"ZMart", "Z-Mart", 4, 4},
-		"monolith":         {"Monolith", "Monolith", 5, 5},
+		"monolithBurgers":  {"MonolithBurgers", "Monolith Burgers", 5, 5},
 		"qtClothing":       {"QTClothing", "QT Clothing", 6, 6},
 		"socketCity":       {"SocketCity", "Socket City", 7, 7},
 		"hiTechU":          {"HiTechU", "Hi-Tech University", 8, 8},
@@ -131,7 +95,7 @@ func initializeLocations() *GameBoard {
 		lowCostHousing:   createLocation(locationMap["lowCostHousing"]),
 		pawnShop:         createLocation(locationMap["pawnShop"]),
 		zMart:            createLocation(locationMap["zMart"]),
-		monolith:         createLocation(locationMap["monolith"]),
+		monolithBurgers:  createLocation(locationMap["monolithBurgers"]),
 		qtClothing:       createLocation(locationMap["qtClothing"]),
 		socketCity:       createLocation(locationMap["socketCity"]),
 		hiTechU:          createLocation(locationMap["hiTechU"]),
@@ -139,15 +103,6 @@ func initializeLocations() *GameBoard {
 		factory:          createLocation(locationMap["factory"]),
 		bank:             createLocation(locationMap["bank"]),
 		blacksMarket:     createLocation(locationMap["blacksMarket"]),
-	}
-}
-
-func createLocation(data locData) location {
-	return location{
-		img:              loadLocationFile(data.asset),
-		name:             data.name,
-		relativeDistance: data.dist,
-		pos:              data.pos,
 	}
 }
 
@@ -197,13 +152,31 @@ func (gm GameModel) View() string {
 	switch gm.GameState {
 
 	case initializingMap:
-		horizontal := lipgloss.JoinHorizontal(
+		row1 := lipgloss.JoinHorizontal(
 			lipgloss.Top,
-			block1.Render(gm.Board.luxuryApartments.img+"\n"+gm.Board.luxuryApartments.name),
-			block2.Render(gm.Board.rentOffice.img+"\n"+gm.Board.rentOffice.name),
-			block3.Render(gm.Board.lowCostHousing.img+"\n"+gm.Board.lowCostHousing.name),
-			block4.Render(gm.Board.pawnShop.img+"\n"+gm.Board.pawnShop.name))
-		return horizontal
+			locationBlock.Render(gm.Board.luxuryApartments.img+"\n"+titleBlock.Render(gm.Board.luxuryApartments.name)),
+			locationBlock.Render(gm.Board.rentOffice.img+"\n"+titleBlock.Render(gm.Board.rentOffice.name)),
+			locationBlock.Render(gm.Board.lowCostHousing.img+"\n"+titleBlock.Render(gm.Board.lowCostHousing.name)),
+			locationBlock.Render(gm.Board.pawnShop.img+"\n"+titleBlock.Render(gm.Board.pawnShop.name)),
+			locationBlock.Render(gm.Board.zMart.img+"\n"+titleBlock.Render(gm.Board.zMart.name)),
+		)
+		row2 := lipgloss.JoinHorizontal(
+			lipgloss.Top,
+			locationBlock.Render(gm.Board.monolithBurgers.img+"\n"+titleBlock.Render(gm.Board.monolithBurgers.name)),
+			locationBlock.Render(gm.Board.qtClothing.img+"\n"+titleBlock.Render(gm.Board.qtClothing.name)),
+			locationBlock.Render(gm.Board.socketCity.img+"\n"+titleBlock.Render(gm.Board.socketCity.name)),
+			locationBlock.Render(gm.Board.hiTechU.img+"\n"+titleBlock.Render(gm.Board.hiTechU.name)),
+			locationBlock.Render(gm.Board.employmentOffice.img+"\n"+titleBlock.Render(gm.Board.employmentOffice.name)),
+		)
+		row3 := lipgloss.JoinHorizontal(
+			lipgloss.Top,
+			locationBlock.Render(gm.Board.factory.img+"\n"+titleBlock.Render(gm.Board.factory.name)),
+			locationBlock.Render(gm.Board.bank.img+"\n"+titleBlock.Render(gm.Board.bank.name)),
+			locationBlock.Render(gm.Board.blacksMarket.img+"\n"+titleBlock.Render(gm.Board.blacksMarket.name)),
+		)
+
+		return row1 + "\n" + row2 + "\n" + row3
+
 	case startingTurn:
 		return fmt.Sprintln("starting turn...")
 	default:
