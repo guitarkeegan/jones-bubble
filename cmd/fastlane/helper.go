@@ -10,6 +10,7 @@ import (
 )
 
 func loadLocationFile(name string) string {
+	dbg("loadLocationFile")
 	filePath := filepath.Join("assets", fmt.Sprintf("Location_%s", name))
 	content, err := os.ReadFile(filePath)
 	if err != nil {
@@ -18,16 +19,8 @@ func loadLocationFile(name string) string {
 		// Return a placeholder or default content instead
 		return fmt.Sprintf("[Missing asset for %s]", name)
 	}
+	dbg("loadLocationFile end")
 	return string(content)
-}
-
-func createLocation(data locData) location {
-	return location{
-		img:              loadLocationFile(data.asset),
-		name:             data.name,
-		relativeDistance: data.dist,
-		pos:              data.pos,
-	}
 }
 
 func (gm GameModel) getLocationBlock(l string) lipgloss.Style {
