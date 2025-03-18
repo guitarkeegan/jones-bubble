@@ -130,12 +130,14 @@ func (gm GameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	dbg(fmt.Sprintf("update game state: %[1]s | msg/type: %[2]v/%[2]T", gm.GameState, msg))
 
+	// var cmd tea.Cmd
+
 	switch msg := msg.(type) {
 
 	case GameStateMsg:
 		switch msg {
 		case destinationSet:
-			gm.GameState = initializingMap
+			gm.GameState = visitingLocation
 		case mapInitialized:
 		case turnStarted:
 
@@ -151,14 +153,16 @@ func (gm GameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case initializingMap:
 		// TODO: do this
 		dbg("initializingMap")
-		var cmd tea.Cmd
 		gm, cmd := gm.updateChooseDestination(msg)
 		dbg("cmd: %[1]v, %[1]T", cmd)
 		return gm, cmd
+	case visitingLocation:
+	// TODO open a new view of the current location
 	default:
 		return gm, nil
 	}
 
+	return gm, nil
 }
 
 func (gm GameModel) View() string {
@@ -182,7 +186,6 @@ func (gm GameModel) View() string {
 			gm.getLocationBlock(gm.Board.lowCostHousing.name).Render(gm.Board.lowCostHousing.img+"\n"+titleBlock.Render(gm.Board.lowCostHousing.name)),
 			gm.getLocationBlock(gm.Board.pawnShop.name).Render(gm.Board.pawnShop.img+"\n"+titleBlock.Render(gm.Board.pawnShop.name)),
 			gm.getLocationBlock(gm.Board.zMart.name).Render(gm.Board.zMart.img+"\n"+titleBlock.Render(gm.Board.zMart.name)),
-			selectDestForm,
 		)
 		row2 := lipgloss.JoinHorizontal(
 			lipgloss.Center,
@@ -197,6 +200,7 @@ func (gm GameModel) View() string {
 			gm.getLocationBlock(gm.Board.factory.name).Render(gm.Board.factory.img+"\n"+titleBlock.Render(gm.Board.factory.name)),
 			gm.getLocationBlock(gm.Board.bank.name).Render(gm.Board.bank.img+"\n"+titleBlock.Render(gm.Board.bank.name)),
 			gm.getLocationBlock(gm.Board.blacksMarket.name).Render(gm.Board.blacksMarket.img+"\n"+titleBlock.Render(gm.Board.blacksMarket.name)),
+			lipgloss.NewStyle().MaxWidth(20).Render(selectDestForm),
 		)
 
 		return row1 + "\n" + row2 + "\n" + row3

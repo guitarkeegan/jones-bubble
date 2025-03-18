@@ -23,6 +23,7 @@ func (gm GameModel) updateChooseDestination(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	if gm.ActionsMenu.State == huh.StateCompleted {
 		dbg("  completed")
+		// update the game model
 		return gm, destinationSet.Cmd
 	}
 

@@ -30,4 +30,7 @@ const (
 
 	settingDestination GameState    = "setting destination"
 	destinationSet     GameStateMsg = "destination set"
+
+	visitingLocation GameState    = "visiting location"
+	locationVisted   GameStateMsg = "location visited"
 )

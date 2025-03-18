@@ -11,5 +11,5 @@ var titleBlock = lipgloss.NewStyle().
 	Foreground(lipgloss.Color("234"))
 
 var currentLocationBlock = lipgloss.NewStyle().
-	Border(lipgloss.NormalBorder()).
+	Border(lipgloss.ThickBorder()).
 	BorderForeground(lipgloss.Color("#EB96A9"))
