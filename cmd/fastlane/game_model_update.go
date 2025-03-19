@@ -23,10 +23,29 @@ func (gm GameModel) updateChooseDestination(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	if gm.ActionsMenu.State == huh.StateCompleted {
 		dbg("  completed")
+		gm.CurrentLoc = gm.Board[gm.ActionsMenu.GetString(destinationKey)]
 		// update the game model
 		return gm, destinationSet.Cmd
 	}
 
 	dbg("updateChooseDestinationEnd")
 	return gm, cmd
+}
+
+func (gm GameModel) updateEnterLocation(msg tea.Msg) (tea.Model, tea.Cmd) {
+
+	dbg("updateEnterLocation")
+	if gm.ActionsMenu == nil {
+		dbg("  is nil")
+		// TODO: this won't work because the field expects
+		// a *huh.Form
+		// gm.ActionsMenu = newEnterLocationForm()
+		return gm, gm.ActionsMenu.Init()
+	}
+
+	dbg("%v", msg)
+	dbg("  not nil")
+
+	dbg("end")
+	return gm, nil
 }

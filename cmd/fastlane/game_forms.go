@@ -31,3 +31,7 @@ func newChooseDestForm() *huh.Form {
 		),
 	)
 }
+
+// TODO: create a storefront form, based on a location name
+// that is passed in
+func newEnterLocationForm() {}

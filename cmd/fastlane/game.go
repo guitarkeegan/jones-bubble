@@ -1,5 +1,11 @@
 package main
 
+// when i click on a store, i see a new menu
+// how do i know which one i clicked?
+// update the currentLocation
+// show the view of the currentLocation
+// each location is a custom form
+
 import (
 	"fmt"
 
@@ -58,18 +64,18 @@ type Buyer[T any] interface {
 }
 
 type GameModel struct {
-	Board       map[string]location
+	Board       map[string]*location
 	GameState   GameState
 	ActionsMenu *huh.Form
 	CurrentLoc  *location
 }
 
-func initializeLocations() map[string]location {
+func initializeLocations() map[string]*location {
 
 	dbg("initializeLocations")
 
 	// Map location fields to their data
-	locations := map[string]location{
+	locations := map[string]*location{
 		"luxuryApartments": {"SecurityApartments", "Luxury Apartments", 0, 0},
 		"rentOffice":       {"RentOffice", "Rent Office", 1, 1},
 		"lowCostHousing":   {"LowCostHousing", "Low Cost Housing", 2, 2},
@@ -125,6 +131,8 @@ func (gm GameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case GameStateMsg:
 		switch msg {
 		case destinationSet:
+			// set ActionsMenu to nil an replace with location
+			gm.ActionsMenu = nil
 			gm.GameState = visitingLocation
 		case mapInitialized:
 		case turnStarted:
@@ -145,14 +153,12 @@ func (gm GameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		dbg("cmd: %[1]v, %[1]T", cmd)
 		return gm, cmd
 	case visitingLocation:
-	// TODO open a new view of the current location
-	// create a reusable component that can render the storefront layout
-	// try to match the original layout and style!
+		gm, cmd := gm.updateEnterLocation(msg)
+		return gm, cmd
+
 	default:
 		return gm, nil
 	}
-
-	return gm, nil
 }
 
 func (gm GameModel) View() string {
