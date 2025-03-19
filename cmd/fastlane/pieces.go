@@ -24,10 +24,11 @@ const (
 type player int
 
 const (
-	playerCountKey   = "playerCount"
-	educationGoalKey = "educationGoalKey"
-	moneyGoalKey     = "moneyGoalKey"
-	happinessGoalKey = "happinessGoalKey"
-	careerGoalKey    = "careerGoalKey"
-	destinationKey   = "destinationKey"
+	playerCountKey      = "playerCount"
+	educationGoalKey    = "educationGoalKey"
+	moneyGoalKey        = "moneyGoalKey"
+	happinessGoalKey    = "happinessGoalKey"
+	careerGoalKey       = "careerGoalKey"
+	destinationKey      = "destinationKey"
+	luxuryApartmentsKey = "luxuryApartmentsKey"
 )

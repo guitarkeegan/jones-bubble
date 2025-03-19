@@ -5,6 +5,10 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"regexp"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 
 	"github.com/charmbracelet/lipgloss"
 )
@@ -28,4 +32,12 @@ func (gm GameModel) getLocationBlock(l string) lipgloss.Style {
 		return currentLocationBlock
 	}
 	return locationBlock
+}
+
+func camelCaseToTitle(input string) string {
+	re := regexp.MustCompile(`([a-z])([A-Z])`)
+	formatted := re.ReplaceAllString(input, `$1 $2`)
+
+	t := cases.Title(language.English)
+	return t.String(formatted)
 }

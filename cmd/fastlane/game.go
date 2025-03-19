@@ -132,8 +132,13 @@ func (gm GameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg {
 		case destinationSet:
 			// set ActionsMenu to nil an replace with location
+			// recalculate relative positions in model
+			// update time
 			gm.ActionsMenu = nil
 			gm.GameState = visitingLocation
+		case locationVisted:
+			gm.ActionsMenu = nil
+			gm.GameState = initializingMap
 		case mapInitialized:
 		case turnStarted:
 
@@ -147,18 +152,24 @@ func (gm GameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch gm.GameState {
 	case initializingMap:
-		// TODO: do this
 		dbg("initializingMap")
 		gm, cmd := gm.updateChooseDestination(msg)
 		dbg("cmd: %[1]v, %[1]T", cmd)
 		return gm, cmd
 	case visitingLocation:
-		gm, cmd := gm.updateEnterLocation(msg)
-		return gm, cmd
+		// switch on current location?
+		switch gm.CurrentLoc.name {
+		case camelCaseToTitle(luxuryApartments):
+			gm, cmd := gm.updateEnterLuxuryApartments(msg)
+			return gm, cmd
+		default:
+			return gm, nil
+		}
 
 	default:
 		return gm, nil
 	}
+
 }
 
 func (gm GameModel) View() string {
@@ -201,6 +212,8 @@ func (gm GameModel) View() string {
 
 		return row1 + "\n" + row2 + "\n" + row3
 
+	case visitingLocation:
+		return gm.ActionsMenu.View()
 	case startingTurn:
 		return fmt.Sprintln("starting turn...")
 	default:

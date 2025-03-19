@@ -23,8 +23,8 @@ func (gm GameModel) updateChooseDestination(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	if gm.ActionsMenu.State == huh.StateCompleted {
 		dbg("  completed")
-		gm.CurrentLoc = gm.Board[gm.ActionsMenu.GetString(destinationKey)]
 		// update the game model
+		gm.CurrentLoc = gm.Board[gm.ActionsMenu.GetString(destinationKey)]
 		return gm, destinationSet.Cmd
 	}
 
@@ -32,20 +32,42 @@ func (gm GameModel) updateChooseDestination(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return gm, cmd
 }
 
-func (gm GameModel) updateEnterLocation(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (gm GameModel) updateEnterLuxuryApartments(msg tea.Msg) (tea.Model, tea.Cmd) {
+
+	const (
+		EXIT = "Exit"
+		REST = "Rest"
+	)
 
 	dbg("updateEnterLocation")
 	if gm.ActionsMenu == nil {
 		dbg("  is nil")
-		// TODO: this won't work because the field expects
-		// a *huh.Form
-		// gm.ActionsMenu = newEnterLocationForm()
+		// TODO: check game model to see where player lives
+		gm.ActionsMenu = newLuxuryApartmentsForm(false)
 		return gm, gm.ActionsMenu.Init()
 	}
 
-	dbg("%v", msg)
 	dbg("  not nil")
 
+	form, cmd := gm.ActionsMenu.Update(msg)
+	if f, ok := form.(*huh.Form); ok {
+		gm.ActionsMenu = f
+	} else {
+		dbg("  actions form is NOT OK (should never happen)")
+	}
+
+	if gm.ActionsMenu.State == huh.StateCompleted {
+		dbg("  completed")
+		action := gm.ActionsMenu.GetString(luxuryApartmentsKey)
+		if action == EXIT {
+			return gm, locationVisted.Cmd
+		}
+
+		dbg("end")
+		// TODO: send a Msg that will update the character's hapiness
+		return gm, destinationSet.Cmd
+	}
+
 	dbg("end")
-	return gm, nil
+	return gm, cmd
 }
