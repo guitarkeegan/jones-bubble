@@ -8,6 +8,8 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/huh"
@@ -68,6 +70,21 @@ type GameModel struct {
 	GameState   GameState
 	ActionsMenu *huh.Form
 	CurrentLoc  *location
+	temp        string
+}
+
+func ClearScreen() string {
+	return "\033[H\033[2J"
+}
+
+// TODO: update this to load all interiors
+func initializeInteriors() string {
+	contents, err := os.ReadFile("assets/interiors/InteriorApartments_Closed")
+	if err != nil {
+		log.Fatalf("err on INIT: %v", err)
+	}
+	dbg("game init contents first 10 bytes: %v", contents[:10])
+	return string(contents)
 }
 
 func initializeLocations() map[string]*location {
@@ -113,6 +130,7 @@ func NewGameModel() *GameModel {
 			relativeDistance: 2,
 			pos:              2,
 		},
+		temp: initializeInteriors(),
 	}
 }
 
@@ -210,10 +228,14 @@ func (gm GameModel) View() string {
 			lipgloss.NewStyle().MaxWidth(20).Render(selectDestForm),
 		)
 
-		return row1 + "\n" + row2 + "\n" + row3
+		return ClearScreen() + row1 + "\n" + row2 + "\n" + row3
 
 	case visitingLocation:
-		return gm.ActionsMenu.View()
+		switch gm.CurrentLoc.name {
+		case camelCaseToTitle(luxuryApartments):
+			return ClearScreen() + gm.temp + "\n\n" + gm.ActionsMenu.View()
+		}
+		return "missed the apartement case"
 	case startingTurn:
 		return fmt.Sprintln("starting turn...")
 	default:

@@ -32,6 +32,7 @@ type model struct {
 	GameModel           tea.Model
 	state               State
 	currentTurn         player
+	temp                string
 }
 
 func newModel() tea.Model {
