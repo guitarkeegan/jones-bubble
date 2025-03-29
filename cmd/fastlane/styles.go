@@ -13,3 +13,7 @@ var titleBlock = lipgloss.NewStyle().
 var currentLocationBlock = lipgloss.NewStyle().
 	Border(lipgloss.ThickBorder()).
 	BorderForeground(lipgloss.Color("#EB96A9"))
+
+var gameMsgBlock = lipgloss.NewStyle().
+	Foreground(lipgloss.Color("#f0b4dc")).
+	Italic(true)

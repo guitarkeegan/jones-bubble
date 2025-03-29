@@ -32,7 +32,6 @@ type model struct {
 	GameModel           tea.Model
 	state               State
 	currentTurn         player
-	temp                string
 }
 
 func newModel() tea.Model {
@@ -43,10 +42,11 @@ func newModel() tea.Model {
 		messages: userMessages{
 			"Hello", "Goodbye", "Press q to quit OR any other key to start",
 		},
-		helpMenu:   help.New(),
-		characters: make(map[player]character),
-		state:      initializing,
-		GameModel:  NewGameModel(),
+		helpMenu:    help.New(),
+		characters:  make(map[player]character),
+		state:       initializing,
+		currentTurn: player(1),
+		GameModel:   NewGameModel(),
 	}
 }
 
@@ -56,6 +56,8 @@ func (m model) Init() tea.Cmd {
 
 func (m model) Update(tMsg tea.Msg) (tea.Model, tea.Cmd) {
 	dbg(fmt.Sprintf("update state: %[1]s | msg/type: %[2]v/%[2]T", m.state, tMsg))
+
+	var gCmd tea.Cmd
 
 	switch msg := tMsg.(type) {
 	case StateMsg:
@@ -76,6 +78,25 @@ func (m model) Update(tMsg tea.Msg) (tea.Model, tea.Cmd) {
 		case exitRequested:
 			m.state = shuttingDown
 		}
+		// mixing the models a bit here...
+	case GameStateMsg:
+		switch msg {
+		case rested:
+			// better way to do this?
+			// TODO: not updating properly
+			dbg("m.currentTurn: %d", m.currentTurn)
+			currentRest := m.characters[m.currentTurn].relaxation + increaseRest
+			dbg("  currentRest: %d", currentRest)
+			currentCharacter := m.characters[m.currentTurn]
+			currentCharacter.relaxation = currentRest
+			m.characters[m.currentTurn] = currentCharacter
+			m.GameModel, gCmd = m.GameModel.Update(tMsg)
+			dbg("Characters: %+v", m.characters)
+			return m, gCmd
+		}
+	case GameTickMsg:
+		m.GameModel, gCmd = m.GameModel.Update(tMsg)
+		return m, gCmd
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "q", "ctrl+c":

@@ -60,7 +60,7 @@ func (m model) updateCharacterSetupForm(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	if m.charactersSetupForm.State == huh.StateCompleted {
 		for i := 1; i < m.playerCount+1; i++ {
-			m.characters[player(i)] = character{name: name(m.charactersSetupForm.GetString(fmt.Sprintf("player%d", i)))}
+			m.characters[player(i)] = character{name: name(m.charactersSetupForm.GetString(fmt.Sprintf("player%d", i))), relaxation: relaxationDefault}
 		}
 		return m, charactersSet.Cmd
 	}

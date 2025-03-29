@@ -12,6 +12,7 @@ type character struct {
 	educationGoal    int
 	currentCareer    int
 	careerGoal       int
+	relaxation       int
 }
 
 const (
@@ -19,6 +20,9 @@ const (
 	john   name = "John"
 	paul   name = "Paul"
 	ringo  name = "Ringo"
+
+	relaxationDefault int = 10
+	increaseRest      int = 3
 )
 
 type player int
@@ -31,4 +35,6 @@ const (
 	careerGoalKey       = "careerGoalKey"
 	destinationKey      = "destinationKey"
 	luxuryApartmentsKey = "luxuryApartmentsKey"
+	lowCostHousingKey   = "lowCostHousingKey"
+	rentOfficeKey       = "rentOfficeKey"
 )
