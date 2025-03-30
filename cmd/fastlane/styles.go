@@ -2,17 +2,9 @@ package main
 
 import "github.com/charmbracelet/lipgloss"
 
-var locationBlock = lipgloss.NewStyle().
-	Border(lipgloss.NormalBorder()).
-	BorderForeground(lipgloss.Color("7"))
-
 var titleBlock = lipgloss.NewStyle().
 	Background(lipgloss.Color("#EB96A9")).
 	Foreground(lipgloss.Color("234"))
-
-var currentLocationBlock = lipgloss.NewStyle().
-	Border(lipgloss.ThickBorder()).
-	BorderForeground(lipgloss.Color("#EB96A9"))
 
 var gameMsgBlock = lipgloss.NewStyle().
 	Foreground(lipgloss.Color("#f0b4dc")).

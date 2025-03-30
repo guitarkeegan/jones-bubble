@@ -17,6 +17,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
+	"maps"
 )
 
 type Job struct {
@@ -29,7 +30,6 @@ type Job struct {
 }
 
 type location struct {
-	img               string
 	name              string
 	relativeDistance  int
 	pos               int
@@ -54,34 +54,9 @@ var (
 	blacksMarket     = "blacksMarket"
 )
 
-type Accommodator interface {
-	HowMuch() int
-	PayRent(payment int) int
-	Rest(time int) int
-	Talk(event string) string
-	Evict(p player) int
-}
-
-type Employer interface {
-	Apply(edu, exp int) bool
-	Work(time int) int
-	Promote(p player) int
-	Quit()
-	Talk(event string) string
-}
-
-type Seller[T any] interface {
-	Buy(money int) T
-	Talk(event string) string
-}
-
-type Buyer[T any] interface {
-	Sell(item T) int
-	Talk(event string) string
-}
-
 type GameModel struct {
 	Board       map[string]*location
+	MainMap     string
 	GameState   GameState
 	ActionsMenu *huh.Form
 	CurrentLoc  *location
@@ -150,27 +125,22 @@ func initializeLocations() map[string]*location {
 
 	// Map location fields to their data
 	locations := map[string]*location{
-		"luxuryApartments": {"SecurityApartments", "Luxury Apartments", 0, 0, "", "", false},
-		"rentOffice":       {"RentOffice", "Rent Office", 1, 1, "", "", false},
-		"lowCostHousing":   {"LowCostHousing", "Low Cost Housing", 2, 2, "", "", false},
-		"pawnShop":         {"PawnShop", "Pawn Shop", 3, 3, "", "", false},
-		"zMart":            {"ZMart", "Z-Mart", 4, 4, "", "", false},
-		"monolithBurgers":  {"MonolithBurgers", "Monolith Burgers", 5, 5, "", "", false},
-		"qtClothing":       {"QTClothing", "QT Clothing", 6, 6, "", "", false},
-		"socketCity":       {"SocketCity", "Socket City", 7, 7, "", "", false},
-		"hiTechU":          {"HiTechU", "Hi-Tech University", 8, 8, "", "", false},
-		"employmentOffice": {"EmploymentOffice", "Employment Office", 9, 9, "", "", false},
-		"factory":          {"Factory", "Factory", 10, 10, "", "", false},
-		"bank":             {"Bank", "Bank", 11, 11, "", "", false},
-		"blacksMarket":     {"BlacksMarket", "Black's Market", 12, 12, "", "", false},
+		"luxuryApartments": {"Luxury Apartments", 0, 0, "", "", false},
+		"rentOffice":       {"Rent Office", 1, 1, "", "", false},
+		"lowCostHousing":   {"Low Cost Housing", 2, 2, "", "", false},
+		"pawnShop":         {"Pawn Shop", 3, 3, "", "", false},
+		"zMart":            {"Z-Mart", 4, 4, "", "", false},
+		"monolithBurgers":  {"Monolith Burgers", 5, 5, "", "", false},
+		"qtClothing":       {"QT Clothing", 6, 6, "", "", false},
+		"socketCity":       {"Socket City", 7, 7, "", "", false},
+		"hiTechU":          {"Hi-Tech University", 8, 8, "", "", false},
+		"employmentOffice": {"Employment Office", 9, 9, "", "", false},
+		"factory":          {"Factory", 10, 10, "", "", false},
+		"bank":             {"Bank", 11, 11, "", "", false},
+		"blacksMarket":     {"Black's Market", 12, 12, "", "", false},
 	}
 
-	for key, loc := range locations {
-		dbg("  loc: %s", loc.img)
-		img := loadLocationFile(loc.img)
-		loc.img = img
-		locations[key] = loc
-	}
+	maps.Copy(locations, locations)
 
 	// return a slice of pairs, key: img data
 	closedImgPath := "assets/interiors"
@@ -205,9 +175,9 @@ func NewGameModel() *GameModel {
 	}
 	return &GameModel{
 		Board:     initializeLocations(),
+		MainMap:   makeMainMap("assets/MainMenu"),
 		GameState: initializingMap,
 		CurrentLoc: &location{
-			img:               loadLocationFile("LowCostHousing"),
 			name:              "Low Cost Housing",
 			relativeDistance:  2,
 			pos:               2,
@@ -320,29 +290,10 @@ func (gm GameModel) View() string {
 		}
 
 		selectDestForm := gm.ActionsMenu.View()
-		row1 := gm.Board[luxuryApartments].img +
-			gm.Board[rentOffice].img +
-			gm.Board[lowCostHousing].img +
-			gm.Board[pawnShop].img +
-			gm.Board[zMart].img
+		f := lipgloss.NewStyle().MaxWidth(20).Render(selectDestForm)
+		// TODO render map
 
-		row2 := lipgloss.JoinHorizontal(
-			lipgloss.Center,
-			gm.getLocationBlock(gm.Board[monolithBurgers].name).Render(gm.Board[monolithBurgers].img+"\n"+titleBlock.Render(gm.Board[monolithBurgers].name)),
-			gm.getLocationBlock(gm.Board[qtClothing].name).Render(gm.Board[qtClothing].img+"\n"+titleBlock.Render(gm.Board[qtClothing].name)),
-			gm.getLocationBlock(gm.Board[socketCity].name).Render(gm.Board[socketCity].img+"\n"+titleBlock.Render(gm.Board[socketCity].name)),
-			gm.getLocationBlock(gm.Board[hiTechU].name).Render(gm.Board[hiTechU].img+"\n"+titleBlock.Render(gm.Board[hiTechU].name)),
-			gm.getLocationBlock(gm.Board[employmentOffice].name).Render(gm.Board[employmentOffice].img+"\n"+titleBlock.Render(gm.Board[employmentOffice].name)),
-		)
-		row3 := lipgloss.JoinHorizontal(
-			lipgloss.Bottom,
-			gm.getLocationBlock(gm.Board[factory].name).Render(gm.Board[factory].img+"\n"+titleBlock.Render(gm.Board[factory].name)),
-			gm.getLocationBlock(gm.Board[bank].name).Render(gm.Board[bank].img+"\n"+titleBlock.Render(gm.Board[bank].name)),
-			gm.getLocationBlock(gm.Board[blacksMarket].name).Render(gm.Board[blacksMarket].img+"\n"+titleBlock.Render(gm.Board[blacksMarket].name)),
-			lipgloss.NewStyle().MaxWidth(20).Render(selectDestForm),
-		)
-
-		return ClearScreen() + row1 + "\n" + row2 + "\n" + row3
+		return ClearScreen() + gm.MainMap + "\n" + f
 
 	case visitingLocation:
 		switch gm.CurrentLoc.name {
