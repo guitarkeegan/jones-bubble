@@ -13,6 +13,9 @@ type character struct {
 	currentCareer    int
 	careerGoal       int
 	relaxation       int
+	hours            int
+	week             int
+	month            int
 }
 
 const (
@@ -23,6 +26,10 @@ const (
 
 	relaxationDefault int = 10
 	increaseRest      int = 3
+
+	hoursDefault int = 60
+	weekDefault  int = 1
+	monthDefault int = 1
 )
 
 type player int

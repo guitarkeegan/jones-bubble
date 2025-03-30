@@ -61,6 +61,7 @@ type GameModel struct {
 	ActionsMenu *huh.Form
 	CurrentLoc  *location
 	GameMsg     string
+	Hours       int
 	// really??
 	GameMsgCounter int
 }

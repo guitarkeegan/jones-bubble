@@ -78,7 +78,7 @@ func (m model) updateCharacterGoalsForm(msg tea.Msg) (tea.Model, tea.Cmd) {
 			dbg("  goals are set")
 			return m, goalsSet.Cmd
 		}
-		// not incrementing playerGoalsCount
+
 		m.characterGoalsForm = newCharacterSelectGoalsForm(m.playerGoalsCount + 1)
 		return m, m.characterGoalsForm.Init()
 	}
@@ -111,6 +111,9 @@ func (m model) updateCharacterGoalsForm(msg tea.Msg) (tea.Model, tea.Cmd) {
 				p.moneyGoal = money
 				p.educationGoal = edu
 				p.happinessGoal = happiness
+				p.week = weekDefault
+				p.month = monthDefault
+				p.hours = hoursDefault
 				m.characters[player(m.playerGoalsCount)] = p
 			}
 
