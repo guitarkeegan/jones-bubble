@@ -320,14 +320,12 @@ func (gm GameModel) View() string {
 		}
 
 		selectDestForm := gm.ActionsMenu.View()
-		row1 := lipgloss.JoinHorizontal(
-			lipgloss.Top,
-			gm.getLocationBlock(gm.Board[luxuryApartments].name).Render(gm.Board[luxuryApartments].img+"\n"+titleBlock.Render(gm.Board[luxuryApartments].name)),
-			gm.getLocationBlock(gm.Board[rentOffice].name).Render(gm.Board[rentOffice].img+"\n"+titleBlock.Render(gm.Board[rentOffice].name)),
-			gm.getLocationBlock(gm.Board[lowCostHousing].name).Render(gm.Board[lowCostHousing].img+"\n"+titleBlock.Render(gm.Board[lowCostHousing].name)),
-			gm.getLocationBlock(gm.Board[pawnShop].name).Render(gm.Board[pawnShop].img+"\n"+titleBlock.Render(gm.Board[pawnShop].name)),
-			gm.getLocationBlock(gm.Board[zMart].name).Render(gm.Board[zMart].img+"\n"+titleBlock.Render(gm.Board[zMart].name)),
-		)
+		row1 := gm.Board[luxuryApartments].img +
+			gm.Board[rentOffice].img +
+			gm.Board[lowCostHousing].img +
+			gm.Board[pawnShop].img +
+			gm.Board[zMart].img
+
 		row2 := lipgloss.JoinHorizontal(
 			lipgloss.Center,
 			gm.getLocationBlock(gm.Board[monolithBurgers].name).Render(gm.Board[monolithBurgers].img+"\n"+titleBlock.Render(gm.Board[monolithBurgers].name)),
