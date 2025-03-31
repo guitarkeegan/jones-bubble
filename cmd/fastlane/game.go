@@ -31,7 +31,6 @@ type Job struct {
 
 type location struct {
 	name              string
-	relativeDistance  int
 	pos               int
 	interiorOpenImg   string
 	interiorClosedImg string
@@ -61,13 +60,9 @@ type GameModel struct {
 	ActionsMenu *huh.Form
 	CurrentLoc  *location
 	GameMsg     string
-	Hours       int
+	Hours       float64
 	// really??
 	GameMsgCounter int
-}
-
-func ClearScreen() string {
-	return "\033[H\033[2J"
 }
 
 // Returns key: value pairs for openImgs
@@ -126,19 +121,19 @@ func initializeLocations() map[string]*location {
 
 	// Map location fields to their data
 	locations := map[string]*location{
-		"luxuryApartments": {"Luxury Apartments", 0, 0, "", "", false},
-		"rentOffice":       {"Rent Office", 1, 1, "", "", false},
-		"lowCostHousing":   {"Low Cost Housing", 2, 2, "", "", false},
-		"pawnShop":         {"Pawn Shop", 3, 3, "", "", false},
-		"zMart":            {"Z-Mart", 4, 4, "", "", false},
-		"monolithBurgers":  {"Monolith Burgers", 5, 5, "", "", false},
-		"qtClothing":       {"QT Clothing", 6, 6, "", "", false},
-		"socketCity":       {"Socket City", 7, 7, "", "", false},
-		"hiTechU":          {"Hi-Tech University", 8, 8, "", "", false},
-		"employmentOffice": {"Employment Office", 9, 9, "", "", false},
-		"factory":          {"Factory", 10, 10, "", "", false},
-		"bank":             {"Bank", 11, 11, "", "", false},
-		"blacksMarket":     {"Black's Market", 12, 12, "", "", false},
+		"luxuryApartments": {"Luxury Apartments", 0, "", "", false},
+		"rentOffice":       {"Rent Office", 1, "", "", false},
+		"lowCostHousing":   {"Low Cost Housing", 2, "", "", false},
+		"pawnShop":         {"Pawn Shop", 3, "", "", false},
+		"zMart":            {"Z-Mart", 4, "", "", false},
+		"monolithBurgers":  {"Monolith Burgers", 5, "", "", false},
+		"qtClothing":       {"QT Clothing", 6, "", "", false},
+		"socketCity":       {"Socket City", 7, "", "", false},
+		"hiTechU":          {"Hi-Tech University", 8, "", "", false},
+		"employmentOffice": {"Employment Office", 9, "", "", false},
+		"factory":          {"Factory", 10, "", "", false},
+		"bank":             {"Bank", 11, "", "", false},
+		"blacksMarket":     {"Black's Market", 12, "", "", false},
 	}
 
 	maps.Copy(locations, locations)
@@ -180,7 +175,6 @@ func NewGameModel() *GameModel {
 		GameState: initializingMap,
 		CurrentLoc: &location{
 			name:              "Low Cost Housing",
-			relativeDistance:  2,
 			pos:               2,
 			interiorOpenImg:   "",
 			interiorClosedImg: closedImgData,

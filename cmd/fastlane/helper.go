@@ -25,3 +25,7 @@ func makeMainMap(path string) string {
 
 	return string(img)
 }
+
+func ClearScreen() string {
+	return "\033[H\033[2J"
+}
